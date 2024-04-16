@@ -13,18 +13,28 @@ export const verifyToken = async (token) => {
 export const loginUser = async (req, res) => {
     let { ci, contrasena } = req.body;
     const result = await obtenerUsuarioPorSuCarnet(ci);
+   
     if (!!!result) {
-      return res.status(404).json({ message: "El usuario no se encontro!" , success:false}); // Not Found
+      return res.json({    
+        message:[`El usuario con ci: ${ci} no esta registrado`],
+        error:'not found',
+        statusCode:404})// Not Found
     }
     try {
       const filtrarContra=await seLogeoPorPrimeraVez(result.ci)
       if(filtrarContra.contrasena==String(contrasena)){
     
-        return res.status(401).json({ message: "Usuario nuevo porfavor cambiar contraseña, (antigua contraseña: numero carnet)" ,  success:false});
+        return res.json({    
+          message:[`Usuario nuevo por favor cambiar contraseña`],
+          error:'ambigous',
+          statusCode:403})
       } 
       const checkPassword = await bcrypt.compare(contrasena, result.contrasena);
       if (!checkPassword) {
-        return res.status(401).json({ message: "contrasena incorrecta!" ,  success:false}); // Unauthorized
+        return res.json({    
+          message:[`la contraseña no es valida`],
+          error:'not found',
+          statusCode:404})// Unauthorized
       }
       const token = jwt.sign(
         { carnet: result.ci,
@@ -34,22 +44,28 @@ export const loginUser = async (req, res) => {
           expiresIn: "48h",
         }
       );
-      return res.status(200).json({
-             message: "inicio de sesión con éxito!", 
-             token ,
-             success:true , 
-             data: {
-                ci: result.ci,
-                nombre:result.nombre,
-                telefono:result.telefono, 
-                id_rol : result.id_rol, 
-                imagen : result.imagen,
-                cargo: result.cargo,
-                } 
-            });
+      const userData={
+        ci: result.ci,
+        nombre:result.nombre,
+        telefono:result.telefono, 
+        correo:result.email, 
+        idRol : result.id_rol, 
+        imagen : result.imagen,
+        cargo: result.cargo,
+        sessionToken:token
+        } 
+        return res.json({
+          message:['Usuario Autentificado'],
+          error:'Sin errores',
+          statusCode:200,
+          data:userData
+        })
 
     } catch (error) {
-      return res.status(500).json({ message: error.message ,success:false}); // Internal Server Error
+      return {    
+        message:error,
+        error:error,
+        statusCode:500}; // Internal Server Error
     }
   };
   

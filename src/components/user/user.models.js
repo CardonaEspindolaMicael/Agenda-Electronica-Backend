@@ -4,7 +4,23 @@ export const obtenerUsuarios = async () => {
   const client = await pool.connect();
   try {
     const response = await pool.query(
-      "SELECT usuario.*, rol.cargo from usuario JOIN rol on usuario.id_rol=rol.id ;"
+      "SELECT u.ci,u.nombre,u.apellidos,u.telefono,c.grado,c.paralelo from usuario as u   JOIN registro  as r on u.ci=r.ci_estudiante JOIN CURSO as c on r.id_curso=c.id;"
+    );
+    client.release();
+    return response?.rows
+    
+  } catch (error) {
+    console.log(error);
+    client.release();
+    return error;
+  }
+};
+
+export const obtenerTutores = async () => {
+  const client = await pool.connect();
+  try {
+    const response = await pool.query(
+      "SELECT ci,nombre,apellidos,telefono from tutor"
     );
     client.release();
     return response?.rows;
@@ -15,11 +31,11 @@ export const obtenerUsuarios = async () => {
   }
 };
 
-export const obtenerUsuariosPorRol = async (rol) => {
+export const obtenerUsuariosPorRol = async () => {
   const client = await pool.connect();
   try {
     const response = await pool.query(
-      "SELECT u.ci,u.nombre,u.apellidos from usuario as u JOIN rol on u.id_rol=rol.id where cargo=$1",[rol]
+      "SELECT u.ci,u.nombre,u.apellidos,u.telefono from usuario as u JOIN rol on u.id_rol=rol.id where cargo='profesor' "
     );
     client.release();
     return response?.rows;
@@ -62,7 +78,31 @@ export const registrarUsuarios = async (
 
   return res;
 };
+export const registrarUsuariosTutor = async (
+  ci,
+  nombre,
+  apellidos,
+  contrasena,
+  telefono,
+) => {
+  const client = await pool.connect();
+  console.log(apellidos)
 
+  const res = await pool.query(
+    "INSERT INTO tutor(ci, nombre, apellidos,contrasena,telefono) VALUES($1, $2, $3, $4, $5)",
+    [
+      ci,
+      nombre,
+      apellidos,
+      contrasena,
+      telefono
+    ]
+  );
+
+  client.release();
+
+  return res;
+};
 export const updateUsuario = async (User) => {
   const {
     ci,
@@ -142,6 +182,16 @@ export const cambiarcontrasena = async (ci, nuevacontrasena) => {
   return res;
 };
 
+export const cambiarcontrasenaTutor = async (ci, nuevacontrasena) => {
+  const client = await pool.connect();
+  const res = await pool.query("UPDATE TUTOR SET contrasena=$1 WHERE ci=$2", [
+    nuevacontrasena,
+    ci,
+  ]);
+  client.release();
+  return res;
+};
+
 export const constraseñaActual = async (ci) => {
   const client = await pool.connect();
   const resp = await pool.query("Select contrasena from usuario where ci=$1", [
@@ -209,10 +259,30 @@ export const seLogeoPorPrimeraVez=async(ci)=>{
 export const registrarMultiplesUsuarios= async (usuarios,cantUser)=>{
   const client = await pool.connect();
 try {
-  const res= await pool.query("SELECT * from insertar_multiples_usuarios($1)",[JSON.stringify(usuarios)])
+  const res= await pool.query("SELECT * from insertar_multiples_estudiantes($1)",[JSON.stringify(usuarios)])
+  console.log(JSON.stringify(usuarios))
   client.release();
   return {
-    "message":"Usuarios registrados con exito",
+    "message":"Estudiantesregistrados con exito",
+    "registrados":cantUser
+  }
+} catch (error) {
+  client.release();
+  return error
+}
+
+
+}
+
+export const registrarMultiplesProfesores= async (usuarios,cantUser)=>{
+  const client = await pool.connect();
+try {
+  console.log(JSON.stringify(usuarios))
+  const res= await pool.query("SELECT * from insertar_multiples_profesores($1)",[JSON.stringify(usuarios)])
+  
+  client.release();
+  return {
+    "message":"Profesores registrados con exito",
     "registrados":cantUser
   }
 } catch (error) {

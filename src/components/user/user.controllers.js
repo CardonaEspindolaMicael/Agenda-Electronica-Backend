@@ -231,7 +231,6 @@ const usuarios=XLSX.utils.sheet_to_json(excel.Sheets[nombreHoja[0]])
 const cantidadUser=excel.Sheets[nombreHoja[0]];
 const numeroDeUsuarios= XLSX.utils.decode_range(cantidadUser['!ref']);
 const respuesta =await registrarMultiplesUsuarios(usuarios,numeroDeUsuarios.e.r-2)
-console.log(respuesta)
 res.status(200).send(respuesta);
 } catch (error) {
   res.status(500).send(error);
@@ -266,7 +265,6 @@ export const excelToJsonPadres= async(req,res)=>{
     const cantidadUser=excel.Sheets[nombreHoja[0]];
     const numeroDeUsuarios= XLSX.utils.decode_range(cantidadUser['!ref']);
     const respuesta =await registrarMultiplesProfesores(usuarios,numeroDeUsuarios.e.r-2)
-    console.log(respuesta)
     res.status(200).send(respuesta);
     } catch (error) {
       res.status(500).send(error);

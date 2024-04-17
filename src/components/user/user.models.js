@@ -260,7 +260,6 @@ export const registrarMultiplesUsuarios= async (usuarios,cantUser)=>{
   const client = await pool.connect();
 try {
   const res= await pool.query("SELECT * from insertar_multiples_estudiantes($1)",[JSON.stringify(usuarios)])
-  console.log(JSON.stringify(usuarios))
   client.release();
   return {
     "message":"Estudiantesregistrados con exito",

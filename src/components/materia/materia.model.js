@@ -3,7 +3,8 @@ import { pool } from "../../config/databaseConnection.js";
 async function getDatosMateria(ciAlumno) {
   const client = await pool.connect();
   try {
-    const res = await pool.query("SELECT  distinct m.nombre FROM usuario as u  JOIN registro as r on u.ci=r.ci_estudiante JOIN curso as c on r.id_curso=c.id JOIN curso_materia as cm on c.id=cm.id_curso JOIN materia as m on cm.id_materia=m.id WHERE u.ci=$1",[ciAlumno]);
+    const res = await pool.query("SELECT  distinct m.nombre, m.id FROM usuario as u  JOIN registro as r on u.ci=r.ci_estudiante JOIN curso as c on r.id_curso=c.id JOIN curso_materia as cm on c.id=cm.id_curso JOIN materia as m on cm.id_materia=m.id WHERE u.ci=$1",[ciAlumno]);
+
     client.release();
     return res.rows;
   } catch (error) {

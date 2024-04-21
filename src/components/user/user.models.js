@@ -240,6 +240,21 @@ export const obtenerUsuarioPorSuCarnet = async (nombre) => {
   }
 };
 
+export const obtenerTutoresPorSuCarnet = async (nombre) => {
+  const client = await pool.connect();
+  try {
+  
+    const res = await pool.query(
+      "SELECT * from tutor WHERE ci=$1",
+      [nombre]);
+    client.release();
+    return res.rows[0];
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+};
+
 export const seLogeoPorPrimeraVez=async(ci)=>{
   const client = await pool.connect();
   try {

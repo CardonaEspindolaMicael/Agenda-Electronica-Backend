@@ -22,8 +22,9 @@ const getActividadesPorCI = async (req, res) => {
 };
 const getDetalleActividad = async (req, res) => {
   const { ciAlumno,materia } = req.params;;
-  try {
+  try { 
     const response = await actividadModels.getDetalleActividad(ciAlumno,materia);
+    
     res.status(200).json(response);
   } catch (error) {
     res.status(400).send(error);

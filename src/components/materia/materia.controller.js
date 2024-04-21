@@ -4,7 +4,7 @@ const getDatosmateria = async (req, res) => {
   const {ciAlumno}=req.params
   try {
     const response = await materiaModels.getDatosMateria(ciAlumno);
-    res.status(200).json(response);
+    res.status(201).json(response);
   } catch (error) {
     res.status(400).send(error);
   }

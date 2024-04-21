@@ -4,7 +4,7 @@ const routerComunicado=Router();
 
 routerComunicado.get('/obtenerVistos/:ciUsuario',comunicadoController.getDatosComunicado);
 
-routerComunicado.get('/',comunicadoController.getDetalleComunicado);
+routerComunicado.get('/:ciUsuario',comunicadoController.getDetalleComunicado);
 
 routerComunicado.post('/',comunicadoController.createComunicado);
 

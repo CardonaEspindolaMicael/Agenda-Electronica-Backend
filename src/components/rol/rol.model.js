@@ -12,11 +12,11 @@ async function getDatosRol() {
   }
 }
 
-async function getDetalleRol(idRol) {
+async function getDetalleRol(idUsuario) {
   const client = await pool.connect();
   try {
-    const res = await pool.query("SELECT * FROM rol where id_rol=$1", [
-      idRol,
+    const res = await pool.query("SELECT u.*,r.cargo FROM usuario as u  JOIN  rol as r on r.id=u.id_rol where ci=$1", [
+      idUsuario,
     ]);
     client.release();
     return res.rows;

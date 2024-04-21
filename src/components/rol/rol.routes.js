@@ -4,7 +4,7 @@ const routerRol=Router();
 
 routerRol.get('/',rolController.getDatosRol);
 
-routerRol.get('/:idrol',rolController.getDetalleRol);
+routerRol.get('/:idUsuario',rolController.getDetalleRol);
 
 routerRol.post('/',rolController.createRol);
 

@@ -15,7 +15,7 @@ async function getDatosComunicado(ci_usuario) {
 async function getDetalleComunicado(ciUsuario) {
   const client = await pool.connect();
   try {
-    const res = await pool.query("select c.descripcion,c.url,dc.fecha from comunicado as c join detalle_comunicado as dc on c.id=dc.id_comunicado where ci_usuario=$1 and visto=false", [
+    const res = await pool.query("select dc.id,c.descripcion,c.url from comunicado as c join detalle_comunicado as dc on c.id=dc.id_comunicado where ci_usuario=$1 and visto=false", [
       ciUsuario,
     ]);
     client.release();

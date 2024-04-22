@@ -8,7 +8,8 @@ routerActividad.get('/obtenerMateriasYCursos/:ciProfesor',actividadController.ge
 routerActividad.get('/obtenerActividadesPendientes/:ciAlumno/:materia',actividadController.getDetalleActividad);//para que le aparescan a los estudiantes las actividades pendientes por cada materia que aparecera en un dropdown necesita la materia del estudiante
 routerActividad.get('/:ciProfesor',actividadController.getActividadesPorCI);//
 routerActividad.post('/crearActividad',actividadController.createActividad); //crea la actividad
-routerActividad.put('/dejarEnVisto/:ciAlumno',actividadController.actualizarVisto);//para actualizar el visto de una actividad
-
+routerActividad.put('/dejarEnVisto/:idActividad',actividadController.actualizarVisto);//para actualizar el visto de una actividad
+routerActividad.get('/obtenerEstudianteProfesor/:ciProfesor',actividadController.obtenerEstudianteProfesor);
+routerActividad.get('/obtenerVistoActividades/:ciProfesor/:grado/:paralelo/:materia',actividadController.obtenerVistoActividades);
 
 export default routerActividad;

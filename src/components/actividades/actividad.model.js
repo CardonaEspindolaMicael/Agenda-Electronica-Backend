@@ -24,6 +24,31 @@ async function getActividadesPorCI(ciProfesor) {
   }
 }
 
+async function obtenerEstudianteProfesor(ciProfesor) {
+  const client = await pool.connect();
+  try {
+    const res = await pool.query("select * from obtener_estudiantes_profesor($1)",[ciProfesor]);
+    client.release();
+    return res.rows;
+  } catch (error) {
+    client.release();
+    return error;
+  }
+}
+
+async function obtenerVistoActividades(ciProfesor,grado,paralelo,materia) {
+  const client = await pool.connect();
+  try {
+    const res = await pool.query("select * from obtener_vistos_actividades($1,$2,$3,$4)",[ciProfesor,grado,paralelo,materia]);
+    client.release();
+    return res.rows;
+  } catch (error) {
+    client.release();
+    return error;
+  }
+}
+
+
 async function getDetalleActividad(ciAlumno,materia) {
   const client = await pool.connect();
   try {
@@ -51,10 +76,10 @@ async function createActividad(idActividad,titulo,descripcion,url,idMateria,ciPr
 }
 
 
-async function actualizarVisto(idAlumno) {
+async function actualizarVisto(idActividad) {
   const client = await pool.connect();
   try {
-    const res = pool.query("update actividad_usuario set visto='true' where id=$1", [idAlumno]);
+    const res = pool.query("update actividad_usuario set visto='true' where id_actividad=$1", [idActividad]);
     client.release();
     return res;
   } catch (error) {
@@ -69,5 +94,7 @@ export const actividadModels = {
   getDetalleActividad,
   actualizarVisto,
   createActividad,
+  obtenerEstudianteProfesor,
+  obtenerVistoActividades
 
 };

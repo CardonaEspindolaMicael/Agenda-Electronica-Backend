@@ -1,5 +1,5 @@
 import {Router} from "express"
-import { postUsuario,patchContrasena, getUsuarios, actualizarUsuario, eliminarUsuario, excelToJson, excelToJsonPadres, patchContrasena2 ,getDatosPorRol, getTutores, patchContrasena3, postUsuarioTutor, excelToJsonProfesor} from "./user.controllers.js";
+import { patchContrasena, getUsuarios, actualizarUsuario, eliminarUsuario, excelToJson, excelToJsonPadres, patchContrasena2 ,getDatosPorRol, getTutores, patchContrasena3, postUsuarioTutor, excelToJsonProfesor, postUsuarioPro, postUsuarioAl} from "./user.controllers.js";
 const routerUser = Router() ;
 import multer from "multer";
 import { checkAuth } from "../../middlewares/auth.js";
@@ -16,7 +16,8 @@ routerUser.get('/' ,checkAuth,authRole(['administrador']),getUsuarios)
 routerUser.get('/tutores' ,checkAuth,authRole(['administrador']),getTutores)
 routerUser.put('/',checkAuth,actualizarUsuario)
 routerUser.get('/obtenerdatosPorRol',checkAuth,getDatosPorRol)
-routerUser.post('/registro',postUsuario)
+routerUser.post('/registroIndPro',postUsuarioPro)
+routerUser.post('/registroIndAl',postUsuarioAl)
 routerUser.post('/registroTutor',checkAuth,postUsuarioTutor)
 routerUser.put('/cambiarClave/:ci',patchContrasena)
 routerUser.put('/cambiarClaveAdmin/:ci',checkAuth,patchContrasena2)

@@ -3,12 +3,7 @@ import { rolModels } from "./rol.model.js";
 const getDatosRol = async (req, res) => {
   try {
     const response = await rolModels.getDatosRol();
-    return res.json({
-      message:['Roles entregados'],
-      error:'Sin errores',
-      statusCode:200,
-      data:response
-    })
+    res.status(201).json(response);
   } catch (error) {
     res.status(400).send(error);
   }
@@ -17,12 +12,7 @@ const getDetalleRol = async (req, res) => {
   const { idUsuario } = req.params;
   try {
     const response = await rolModels.getDetalleRol(idUsuario);
-    return res.json({
-      message:['Roles entregados'],
-      error:'Sin errores',
-      statusCode:200,
-      data:response
-    })
+    res.status(201).json(response);
   } catch (error) {
     res.status(400).send(error);
   }

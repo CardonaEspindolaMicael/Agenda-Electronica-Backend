@@ -1,5 +1,4 @@
 import {
-  registrarUsuarios,
   validarCorreosUnicos,
   cambiarcontrasena,
   constraseñaActual,
@@ -14,7 +13,9 @@ import {
   obtenerTutores,
   cambiarcontrasenaTutor,
   registrarUsuariosTutor,
-  registrarMultiplesProfesores
+  registrarMultiplesProfesores,
+  registrarUsuariosPro,
+  registrarUsuariosAl
  
 } from "./user.models.js";
 import bcrypt from "bcrypt";
@@ -50,38 +51,70 @@ export const getDatosPorRol = async (req, res) => {
     return error;
   }
 };
-
-
-
-export const postUsuario = async (req, res) => {
+export const postUsuarioPro = async (req, res) => {
   try {
     const {
-      ci, 
+      ci_profesor, 
+      nombreA,
       apellidos, 
       correo,
       sexo,
-      contrasena,
       telefono,
-      id_rol
+      gradoA,
+      paraleloA,
+      materiaA
     } = req.body;
-    let nombre = req.body.nombre;
-
-    nombre = nombre?.toLowerCase().trim();
     if (await validarCorreosUnicos(correo)) {
       console.log(validarCorreosUnicos(correo));
       res.status(403).send("Correo ya existe");
       return;
     }
 
-    await registrarUsuarios(
-      ci,
-      nombre,
+    await registrarUsuariosPro(
+      ci_profesor,
+      nombreA,
       apellidos,
       correo,
       sexo,
-      await encryptarContrasena(contrasena),
       telefono,
-      id_rol
+      gradoA,
+      paraleloA,
+      materiaA
+    ).then(() => res.status(201).send("Usuario registrado con exito!"));
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+};
+
+
+export const postUsuarioAl = async (req, res) => {
+  try {
+    const {
+      ci, 
+      nombre,
+      apellidos, 
+      correo,
+      sexo,
+      telefono,
+      gradoA,
+      paraleloA,
+    } = req.body;
+    if (await validarCorreosUnicos(correo)) {
+      console.log(validarCorreosUnicos(correo));
+      res.status(403).send("Correo ya existe");
+      return;
+    }
+
+    await registrarUsuariosAl(
+      ci, 
+      nombre,
+      apellidos, 
+      correo,
+      sexo,
+      telefono,
+      gradoA,
+      paraleloA,
     ).then(() => res.status(201).send("Usuario registrado con exito!"));
   } catch (error) {
     console.log(error);
@@ -215,7 +248,7 @@ export const patchContrasena3 = async (req, res) => {
     res.status(500).send(error);
   }
 };
-const encryptarContrasena = async (contrasena) => {
+export const encryptarContrasena = async (contrasena) => {
   const salt = await bcrypt.genSalt(5);
   const newHash = await bcrypt.hash(contrasena, salt);
   return newHash;

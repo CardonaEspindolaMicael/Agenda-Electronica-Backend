@@ -45,32 +45,62 @@ export const obtenerUsuariosPorRol = async () => {
     return error;
   }
 };
-
-
-export const registrarUsuarios = async (
-  ci,
+export const registrarUsuariosAl = async (
+  ci, 
   nombre,
+  apellidos, 
+  correo,
+  sexo,
+  telefono,
+  gradoA,
+  paraleloA,
+) => {
+  const client = await pool.connect();
+
+  const res = await pool.query(
+    "SELECT * FROM insertar_estudiante_individual($1, $2, $3, $4, $5, $6, $7, $8)",
+    [
+      ci, 
+      nombre,
+      apellidos, 
+      correo,
+      sexo,
+      telefono,
+      gradoA,
+      paraleloA,
+    ]
+  );
+
+  client.release();
+
+  return res;
+};
+
+export const registrarUsuariosPro = async (
+  ci_profesor,
+  nombreA,
   apellidos,
   correo,
   sexo,
-  contrasena,
   telefono,
-  id_rol
+  gradoA,
+  paraleloA,
+  materiaA
 ) => {
   const client = await pool.connect();
-  console.log(apellidos)
 
   const res = await pool.query(
-    "INSERT INTO USUARIO(ci, nombre, apellidos, correo, sexo, contrasena,telefono,id_rol) VALUES($1, $2, $3, $4, $5, $6, $7, $8)",
+    "SELECT * FROM insertar_profesor_individual($1, $2, $3, $4, $5, $6, $7, $8,$9)",
     [
-      ci,
-      nombre,
+      ci_profesor,
+      nombreA,
       apellidos,
       correo,
       sexo,
-      contrasena,
       telefono,
-      id_rol
+      gradoA,
+      paraleloA,
+      materiaA
     ]
   );
 

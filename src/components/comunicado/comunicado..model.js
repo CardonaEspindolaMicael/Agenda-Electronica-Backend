@@ -1,9 +1,9 @@
 import { pool } from "../../config/databaseConnection.js";
 
-async function getDatosComunicado(ci_usuario) {
+async function getDatosComunicado() {
   const client = await pool.connect();
   try {
-    const res = await pool.query("select nombre,apellidos,dc.fecha from comunicado as c join detalle_comunicado as dc on c.id=dc.id_comunicado join usuario on usuario.ci=dc.ci_usuario where ci_usuario=$1 and visto=true ",[ci_usuario]);
+    const res = await pool.query("select c.id,ci_usuario,nombre,apellidos,dc.fecha::date,visto from comunicado as c join detalle_comunicado as dc on c.id=dc.id_comunicado join usuario on usuario.ci=dc.ci_usuario order by dc.fecha DESC ");
     client.release();
     return res.rows;
   } catch (error) {
@@ -53,10 +53,24 @@ async function deleteComunicado(idRol) {
   }
 }
 
+async function   ActualizarComunicadoVisto(idDetalle) {
+  const client = await pool.connect();
+  try {
+    const res = pool.query("update detalle_comunicado set visto='true' where id=$1", [idDetalle]);
+    client.release();
+    return res;
+  } catch (error) {
+    client.release();
+    return error;
+  }
+}
+
+
 export const comunicadoModels = {
   getDatosComunicado,
   getDetalleComunicado,
   createComunicado,
   deleteComunicado,
+  ActualizarComunicadoVisto
 
 };
